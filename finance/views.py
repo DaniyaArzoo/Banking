@@ -1,28 +1,32 @@
 
-from django.shortcuts import redirect,render
-from django.contrib import messages
-from .models import *
-from django.db import transaction
+from django.shortcuts import redirect, render
+from finance.models import *
 
 def pay(request):
-    if request.method=="POST":
-        try:
-            Sender=request.POST.get('Sender')
-            Receiver=request.POST.get('Receiver')
-            amt=request.POST.get('Amount')
-            with transaction.atomic():
-                Sender.obj=transaction.objects.get(user=Sender)
-                Sender.obj.amt-=int(amt)
-                Sender.obj.save()
+    ctx = {}
+    if request.method == "POST":
+        sender = request.POST.get('sender')
+        receiver = request.POST.get('receiver')
+        amount = request.POST.get('amount')
 
-                Receiver.obj=transaction.objects.get(user=Receiver)
-                Receiver.obj.amt+=int(amt)
-                Receiver.obj.save()
-                messages.success(request,"Your Amount Transferred Successfully!")
+        amount = float(amount)
 
-        except Exception as e:
-            print(e)
-            messages.success(request,"OOPS! Something went wrong.")
-        return redirect('/')
-    
-    return render(request,'payment.html')
+        sender_account = Account.objects.get(id=sender)
+        receiver_account = Account.objects.get(id=receiver)
+
+        ctx = {"message": "You do not have enough balance to do this transaction", "balance": sender_account.balance}
+
+        if amount <= sender_account.balance:
+            sender_transaction = Transaction(account=sender_account, amount= -1 * amount)
+            sender_transaction.save()
+            sender_account.balance = sender_account.balance - amount
+            sender_account.save()
+
+            receiver_transaction = Transaction(account=receiver_account, amount = amount)
+            receiver_transaction.save()
+            receiver_account.balance = receiver_account.balance +  amount
+            receiver_account.save()
+            ctx["message"] = "Transaction Successful"
+            ctx["balance"] = sender_account.balance
+
+    return render(request, 'payment.html', context=ctx)

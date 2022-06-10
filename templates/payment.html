@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- It specifies the character encoding for html document -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" contents="width=device-width,initial-scale=1.0" />
+    <title>Transaction</title>
+  </head>
+  <body>
+    <div class="col=6">
+      <!--mt- set top-margin and pt- set padding top-->
+      <form class="mt-5 pt-5" method="POST">
+        <!-- csrf is generated for forms to send requests to the server -->
+        {% csrf_token %}
+        <div class="form-group">
+          <input
+            class="form-control"
+            name="sender"
+            type="text"
+            placeholder="Sender Account Number"
+          />
+        </div>
+        <div class="form-group">
+          <input
+            class="form-control"
+            name="receiver"
+            type="text"
+            placeholder="Receiver Account Number"
+          />
+        </div>
+        <div class="form-group mt-4">
+          <input
+            class="form-control"
+            name="amount"
+            type="number"
+            placeholder="Amount"
+          />
+        </div>
+        <button type="submit" class="btn btn-success mt-3">Submit</button>
+      </form>
+      <p>{{message}}</p>
+      <p>Current Balance: {{balance}} </p>
+    </div>
+  </body>
+</html>
