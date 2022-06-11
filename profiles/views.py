@@ -1,14 +1,24 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.contrib.auth.forms import UserCreationForm
+from profiles.services import create_customer, create_user, username_exists
+from finance.services import create_account
 
 
-# Create your views here.
-'''
-def  register(request):
-    form=UserCreationForm
-    return render (request, "register.html",{'form':form})
+def register(request):
+    context = {}
+    if request.method == "POST":
+        name = request.POST.get("name")
+        phone = request.POST.get("phone_no")
+        address = request.POST.get("address")
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
-#def login(request):
-    #return render (request, "login.html")
-'''
+        if username_exists(username):
+            context["message"] = "Username exists. Please choose another username"
+        else:
+            user = create_user(
+                username=username.lower().strip(), password=password.strip()
+            )
+            customer = create_customer(name, phone, address, user.username)
+            create_account(customer_obj=customer)
+            context["message"] = f"Your username is {user.username}"
+    return render(request, "signup.html", context)

@@ -1,25 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- It specifies the character encoding for html document -->
-    <meta charset="UTF-8" />
-    <meta name="viewport" contents="width=device-width,initial-scale=1.0" />
-    <title>Transaction</title>
-  </head>
-  <body>
+{% include 'head.html' %}
+<style>
+  ul > li {
+      display: inline-block;
+      /* You can also add some margins here to make it look prettier */
+  }
+</style>
+<body>
+    {% include 'nav.html' %}
+    {% include 'info.html' %}
     <div class="col=6">
       <!--mt- set top-margin and pt- set padding top-->
       <form class="mt-5 pt-5" method="POST">
         <!-- csrf is generated for forms to send requests to the server -->
         {% csrf_token %}
-        <div class="form-group">
-          <input
-            class="form-control"
-            name="sender"
-            type="text"
-            placeholder="Sender Account Number"
-          />
-        </div>
         <div class="form-group">
           <input
             class="form-control"
@@ -39,7 +34,9 @@
         <button type="submit" class="btn btn-success mt-3">Submit</button>
       </form>
       <p>{{message}}</p>
-      <p>Current Balance: {{balance}} </p>
+      {% if balance %}
+      <p>Current Balance: {{balance}}</p>
+      {% endif %}
     </div>
   </body>
 </html>

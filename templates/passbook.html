@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'head.html' %}
+<style>
+    ul > li {
+        display: inline-block;
+        /* You can also add some margins here to make it look prettier */
+    }
+</style>
+<body>
+    {% include 'nav.html' %}
+    {% include 'info.html' %}
+    <h3>{{account.id}} | {{account.customer.name}}</h3><br>
+    <table style="border: 1px solid black;">
+    <tr>
+        <th>Timestamp</th>
+        <th>Debit</th>
+        <th>Credit</th>
+    </tr>
+    {% for transaction in transactions %}
+    <tr>
+        <td style="border: 1px solid black;">{{transaction.timestamp}}</td>
+        <td style="border: 1px solid black;">
+        {% if transaction.amount < 0 %} {{transaction.amount}} {% else %} 0.0
+        {% endif %}
+        </td>
+        <td style="border: 1px solid black;">
+        {% if transaction.amount >= 0 %} {{transaction.amount}} {% else %} 0.0
+        {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+    <p>Current Balance : {{account.balance}}</p>
+  </body>
+</html>
